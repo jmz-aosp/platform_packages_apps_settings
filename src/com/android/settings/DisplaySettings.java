@@ -40,6 +40,8 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.DropDownPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.text.TextUtils;
 import android.util.Log;
@@ -103,6 +105,11 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private SwitchPreference mCameraGesturePreference;
     private SwitchPreference mCameraDoubleTapPowerGesturePreference;
 
+    private PreferenceCategory mLedsCategory;
+    private Preference mChargingLeds;
+    private Preference mNotificationLeds;
+
+
     @Override
     protected int getMetricsCategory() {
         return MetricsEvent.DISPLAY;
@@ -115,6 +122,25 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         final ContentResolver resolver = activity.getContentResolver();
 
         addPreferencesFromResource(R.xml.display_settings);
+
+        PreferenceScreen prefSet = getPreferenceScreen();
+
+        mLedsCategory = (PreferenceCategory) findPreference("leds");
+        mChargingLeds = (Preference) findPreference("charging_light");
+        mNotificationLeds = (Preference) findPreference("notification_light");
+        if (mChargingLeds != null
+                && !getResources().getBoolean(
+                        com.android.internal.R.bool.config_intrusiveBatteryLed)) {
+            mLedsCategory.removePreference(mChargingLeds);
+        }
+        if (mNotificationLeds != null
+                && !getResources().getBoolean(
+                        com.android.internal.R.bool.config_intrusiveNotificationLed)) {
+            mLedsCategory.removePreference(mNotificationLeds);
+        }
+        if (mChargingLeds == null && mNotificationLeds == null) {
+            getPreferenceScreen().removePreference(mLedsCategory);
+        }
 
         mScreenSaverPreference = findPreference(KEY_SCREEN_SAVER);
         if (mScreenSaverPreference != null
