@@ -25,7 +25,7 @@
             android:key="notification_light_pulse"
             android:title="@string/notification_light_title" />
 
-        <com.android.settings.batterylight.NotificationLightPreference
+        <com.android.settings.du.batterylight.NotificationLightPreference
             android:key="default"
             android:title="@string/notification_light_default_value"
             android:persistent="false"
